@@ -9,6 +9,7 @@ library(shiny)
 library(tidyr)
 library(rmarkdown)
 library(actuar)
+library(discretization)
 
 # Uvozimo podatke in narišemo histogram
 
@@ -25,7 +26,7 @@ razdalja <- visina$distance[1]
 hist(vzorec, probability = TRUE, xlab = "Višina odškodnine")
 curve(dexp(x, ocena, razdalja), add = TRUE, From = 0, to = 9, 
       col = 'red')
-legend("topright", "eksponentna porazdelitev", fill="red")
+legend("topright", "Eksponentna porazdelitev", fill="red")
 
 #veliki N je bnomsko porazdeljen  E(N)
 #n = 25 - dej eno drugo oznako za n
@@ -85,10 +86,27 @@ verjetnosti <- diff(porazdelitvena)
 
 
 
-Upanje_S_diskretno <- vrednosti %*% verjetnosti
-
-
-Var_S <- (vrednosti * vrednosti) %*% verjetnosti - Upanje_S_diskretno^2
+Upanje_S_diskretno <- sum(vrednosti * verjetnosti)
+upanje_kvadrat <- sum(vrednosti * vrednosti* verjetnosti)
+Var_S <- upanje_kvadrat - (Upanje_S_diskretno)*(Upanje_S_diskretno)
 # Var(S) = E[S^2] - E[S]^2
 
-#3.
+#3.a) 
+#simulacija N
+N_simulacija <- bin(10000, 25, 1/2)
+
+# simulacija S
+S_simulacija <- c()
+for (n in N_sumulacija){
+S_simulacija <-c(simulacija_S, sum(rexp(n,shape,min)))
+
+}
+#3.b) 
+upanje_S_simulacije <- mean(S_simulacija)
+varianca_S_simulacije <- var(S_simulacija)
+
+graf_simulacija<- plot(porazdelitvena)
+plot(ecdf(S_simulacija),add = TRUE, col = "blue")
+legend(500, 0.5, legend = c("Exponentni algoritem,", "Monte Carlo simulacija"), box.lty = 0, 
+       col = c("black","blue"), lty = 1:1)
+  
